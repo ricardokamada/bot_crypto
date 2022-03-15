@@ -21,9 +21,11 @@ function Login() {
         event.preventDefault(); //elimina o refresh da pagina
 
         doLogin(email, password)
-            .then(isValid => {
-                if (isValid)
+            .then(response => {
+                if (response){
+                    localStorage.setItem('token', response.token);
                     history.push('/settings');
+                }
             })
             .catch(err => {
                 setError(err);
