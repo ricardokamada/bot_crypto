@@ -10,6 +10,8 @@ function Settings() {
 
     const [error, setError] = useState('');
 
+    const [success, setSuccess] = useState('');
+
     const [settings, setSettings] = useState({
         email: '',
         apiUrl: '',
@@ -35,17 +37,7 @@ function Settings() {
             })
     }, [])
 
-    function onLogoutClick(event) {
-        const token = localStorage.getItem('token');
-
-        doLogout(token)
-            .then(response => {
-                localStorage.removeItem('token');
-                history.push('/');
-            })
-            .catch(err => {
-                setError(err.message);
-            })
+    function onFormSubmit(event) {
 
     }
 
@@ -53,26 +45,87 @@ function Settings() {
 
         <React.Fragment>
             <Menu />
-
-            <main>
-                <section className='vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center' >
-                    <div className='container'>
-                        <p className='text-center'>
-                            <Link to='/' className='d-flex align-items-center justify-content-center'>
-                                <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fillRule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd"></path>
-                                </svg>
-                                {settings.email}
-                            </Link>
-                            <button type='button' className='btn btn-primary' onClick={onLogoutClick}>Logout</button>
-                            {
-                                error
-                                    ? <div className='alert alert-danger'>{error}</div>
-                                    : <React.Fragment> </React.Fragment>
-                            }
-                        </p>
+            <main className='content'>
+                <div className='d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4'>
+                    <div className='d-block mb-4 mb-md-0'>
+                        <h1 className='h4'>Settings</h1>
                     </div>
-                </section>
+                </div>
+
+                <div className="row">
+                    <div className="col-12">
+                        <div className="card card-body border-0 shadow mb-4">
+                            <h2 className='h5 mb-4'>General Info</h2>
+                            <form onSubmit={onFormSubmit}>
+                                <div className="row">
+                                    <div className="col-md-6 mb-3">
+                                        <div className="form-group">
+                                            <label htmlFor='email'>Email</label>
+                                            <input className="form-control" id='email' type="email" placeholder='name@company.com' required />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 mb-3">
+                                        <div>
+                                            <label htmlFor='newPassword'>New Password</label>
+                                            <input className="form-control" id='newPassword' type="password" placeholder='Enter your new password' />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6 mb-3">
+                                        <div>
+                                            <label htmlFor='confirmPassword'>Confirm Password</label>
+                                            <input className="form-control" id='confirmPassword' type="password" placeholder='Enter your new password again' />
+                                        </div>
+                                    </div>
+                                </div>
+                                <h2 className='h5 my-4'>Exchange Info</h2>
+                                <div className="row">
+                                    <div className="col-sm-12 mb-3">
+                                        <div className="form-group">
+                                            <label htmlFor='apiUrl'>API URL</label>
+                                            <input className="form-control" id='apiUrl' type="text" placeholder='Enter the API URL' required />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-sm-12 mb-3">
+                                        <div className="form-group">
+                                            <label htmlFor='accessKey'>ACCESS KEY</label>
+                                            <input className="form-control" id='accessKey' type="text" placeholder='Enter the ACCESS KEY' required />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-sm-12 mb-3">
+                                        <div className="form-group">
+                                            <label htmlFor='secretKey'>NEW SECRET KEY</label>
+                                            <input className="form-control" id='secretKey' type="password" placeholder='Enter the SECRET KEY' required />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap">
+                                        <div className='col-sm-3'>
+                                            <button class="btn btn-gray-800 mt-2 animate-up-2" type='submit'> Save All</button>
+                                        </div>
+                                        {
+                                            error ?
+                                                <div className='alert alert-danger mt-2 col-9 py-2'>{error} </div>
+                                                : <React.Fragment></React.Fragment>
+                                        }
+                                        {
+                                            success ?
+                                                <div className='alert alert-danger mt-2 col-9 py-2'>{success} </div>
+                                                : <React.Fragment></React.Fragment>
+                                        }
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
             </main>
         </React.Fragment>
 
