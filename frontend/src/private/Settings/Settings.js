@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { getSettings } from '../../services/SettingsService';
-import { doLogout } from '../../services/AuthService';
 import Menu from '../../components/Menu/Menu';
 
 function Settings() {
+
+    const inputEmail = useRef('');
+    const inputNewpassword = useRef('');
+    const inputConfirmPassword = useRef('');
+    const inputApiUrl = useRef('');
+    const inputAccessKey = useRef('');
+    const inputSecretKey = useRef('');
 
     const history = useHistory();
 
@@ -12,19 +18,16 @@ function Settings() {
 
     const [success, setSuccess] = useState('');
 
-    const [settings, setSettings] = useState({
-        email: '',
-        apiUrl: '',
-        accessKey: '',
-        keySecret: ''
-    })
 
     useEffect(() => {
         const token = localStorage.getItem("token");
 
         getSettings(token)
-            .then(response => {
-                setSettings(response);
+            .then(settings => {
+                inputEmail.current.value = settings.email;
+                inputApiUrl.current.value = settings.apiUrl;
+                inputAccessKey.current.value = settings.accessKey;
+
             })
             .catch(err => {
                 if (err.response && err.response.status === 401)
@@ -61,7 +64,7 @@ function Settings() {
                                     <div className="col-md-6 mb-3">
                                         <div className="form-group">
                                             <label htmlFor='email'>Email</label>
-                                            <input className="form-control" id='email' type="email" placeholder='name@company.com' required />
+                                            <input ref={inputEmail} className="form-control" id='email' type="email" placeholder='name@company.com' required />
                                         </div>
                                     </div>
                                 </div>
@@ -69,13 +72,13 @@ function Settings() {
                                     <div className="col-md-6 mb-3">
                                         <div>
                                             <label htmlFor='newPassword'>New Password</label>
-                                            <input className="form-control" id='newPassword' type="password" placeholder='Enter your new password' />
+                                            <input ref={inputNewpassword} className="form-control" id='newPassword' type="password" placeholder='Enter your new password' />
                                         </div>
                                     </div>
                                     <div className="col-md-6 mb-3">
                                         <div>
                                             <label htmlFor='confirmPassword'>Confirm Password</label>
-                                            <input className="form-control" id='confirmPassword' type="password" placeholder='Enter your new password again' />
+                                            <input ref={inputConfirmPassword} className="form-control" id='confirmPassword' type="password" placeholder='Enter your new password again' />
                                         </div>
                                     </div>
                                 </div>
@@ -84,7 +87,7 @@ function Settings() {
                                     <div className="col-sm-12 mb-3">
                                         <div className="form-group">
                                             <label htmlFor='apiUrl'>API URL</label>
-                                            <input className="form-control" id='apiUrl' type="text" placeholder='Enter the API URL' required />
+                                            <input ref={inputApiUrl} className="form-control" id='apiUrl' type="text" placeholder='Enter the API URL' required />
                                         </div>
                                     </div>
                                 </div>
@@ -92,7 +95,7 @@ function Settings() {
                                     <div className="col-sm-12 mb-3">
                                         <div className="form-group">
                                             <label htmlFor='accessKey'>ACCESS KEY</label>
-                                            <input className="form-control" id='accessKey' type="text" placeholder='Enter the ACCESS KEY' required />
+                                            <input ref={inputAccessKey} className="form-control" id='accessKey' type="text" placeholder='Enter the ACCESS KEY' required />
                                         </div>
                                     </div>
                                 </div>
@@ -100,14 +103,14 @@ function Settings() {
                                     <div className="col-sm-12 mb-3">
                                         <div className="form-group">
                                             <label htmlFor='secretKey'>NEW SECRET KEY</label>
-                                            <input className="form-control" id='secretKey' type="password" placeholder='Enter the SECRET KEY' required />
+                                            <input ref={inputSecretKey} className="form-control" id='secretKey' type="password" placeholder='Enter the SECRET KEY' required />
                                         </div>
                                     </div>
                                 </div>
                                 <div className="row">
-                                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap">
+                                    <div className="d-flex justify-content-between flex-wrap flex-md-nowrap">
                                         <div className='col-sm-3'>
-                                            <button class="btn btn-gray-800 mt-2 animate-up-2" type='submit'> Save All</button>
+                                            <button className="btn btn-gray-800 mt-2 animate-up-2" type='submit'> Save All</button>
                                         </div>
                                         {
                                             error ?
