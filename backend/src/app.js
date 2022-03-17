@@ -2,6 +2,7 @@ const express = require('express');
 const authMiddleware = require('./middlewares/authMiddleware');
 const authController = require('./controllers/authController');
 const settingsController = require('./controllers/settingsController');
+const morgan = require('morgan');
 
 
 
@@ -13,11 +14,13 @@ const helmet = require('helmet');
 
 const app = express(); //inicia o express
 
-app.use(cors()); //cors permite q o front envie requisicoes para o back
+app.use(cors({origin: process.env.CORS_ORIGIN})); //cors permite q o front envie requisicoes para o back
 
 app.use(helmet()); //helmet e um middlware que protege contra 11 ataques basicos
 
 app.use(express.json()); // permite o body parse em varios formatos
+
+app.use(morgan('dev')); // logger para backend
 
 
 app.post('/login', authController.doLogin);
