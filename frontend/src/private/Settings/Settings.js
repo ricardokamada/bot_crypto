@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { getSettings } from '../../services/SettingsService';
+import { useHistory } from 'react-router-dom';
+import { getSettings, updateSettings } from '../../services/SettingsService';
 import Menu from '../../components/Menu/Menu';
 
 function Settings() {
@@ -41,6 +41,38 @@ function Settings() {
     }, [])
 
     function onFormSubmit(event) {
+        event.preventDefault();
+
+        if ((inputNewpassword.current.value || inputConfirmPassword.current.value)
+            && inputNewpassword.current.value !== inputConfirmPassword.current.value) {
+            return setError('The fields New password and Confirm password must be equals. ')
+        }
+        const token = localStorage.getItem('token');
+
+        updateSettings({
+            email: inputEmail.current.value,
+            password: inputNewpassword.current.value ? inputNewpassword.current.value : null,
+            apiUrl: inputApiUrl.current.value,
+            accessKey: inputAccessKey.current.value,
+            secretKey: inputSecretKey.current.value ? inputSecretKey.current.value : null
+        }, token)
+            .then(result => {
+                if (result) {
+                    setError('');
+                    setSuccess(`Settings updated succcessfully !`);
+                    inputSecretKey.current.value = '';
+                    inputNewpassword.current.value = '';
+                    inputConfirmPassword.current.value = '';
+                } else {
+                    setSuccess('');
+                    setError(`Can't update the settings `)
+                }
+            })
+            .catch(error => {
+                setSuccess('');
+                console.error(error.message);
+                setError(`Can't update the settings `)
+            })
 
     }
 
@@ -103,7 +135,7 @@ function Settings() {
                                     <div className="col-sm-12 mb-3">
                                         <div className="form-group">
                                             <label htmlFor='secretKey'>NEW SECRET KEY</label>
-                                            <input ref={inputSecretKey} className="form-control" id='secretKey' type="password" placeholder='Enter the SECRET KEY' required />
+                                            <input ref={inputSecretKey} className="form-control" id='secretKey' type="password" placeholder='Enter the SECRET KEY' />
                                         </div>
                                     </div>
                                 </div>
@@ -119,7 +151,7 @@ function Settings() {
                                         }
                                         {
                                             success ?
-                                                <div className='alert alert-danger mt-2 col-9 py-2'>{success} </div>
+                                                <div className='alert alert-success mt-2 col-9 py-2'>{success} </div>
                                                 : <React.Fragment></React.Fragment>
                                         }
                                     </div>
