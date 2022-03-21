@@ -1,6 +1,7 @@
 import React from "react";
 
 /**
+ * props.onCLick
  * props.data:
  * - symbol
  * - basePrecision
@@ -11,6 +12,8 @@ import React from "react";
  */
 
 function SymbolRow(props) {
+
+    
     return (
         <tr>
             <td className="text-gray-900">
@@ -38,8 +41,8 @@ function SymbolRow(props) {
             </td>
 
             <td>
-                <button id={"edit" + props.data.symbol} className="btn btn-secondary animate-up-2" width={32} onClick={props.onClick} data-bs-toggle="modal" data-bs-target="#modalSymbol">
-                    <svg id={"edit" + props.data.symbol} className="icon icon-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <button id={"edit" + props.data.symbol} className="btn btn-secondary animate-up-2" width={32} data-bs-toggle="modal" data-bs-target="#modalSymbol" onClick={props.onClick}>
+                    <svg id={"edit" + props.data.symbol} className="icon icon-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" onClick={props.onClick}>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                 </button>

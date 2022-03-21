@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { getSymbols, syncSymbols } from '../../services/SymbolsService';
 import SymbolRow from './SymbolRow';
+import SelectQuote, {getDefaultQuote, filterSymbolObjects, setDefaultQuote} from '../../components/SelectQuote/SelectQuote';
+import SymbolModal from './SymbolModal';
 
 function Symbols() {
 
@@ -11,6 +13,16 @@ function Symbols() {
 
     const [error, setError] = useState('');
 
+    const [editSymbol, setEditSymbol] = useState({
+        symbol: '',
+        basePrecision: 0,
+        quotePrecision: 0,
+        minLotSite: '',
+        minNotional: ''
+    });
+    
+    const [quote, setQuote] = useState(getDefaultQuote());
+
     const [success, setSuccess] = useState('');
 
     const [isSyncing, setIsSyncing] = useState(false);
@@ -19,7 +31,7 @@ function Symbols() {
         const token = localStorage.getItem('token');
         getSymbols(token)
             .then(symbols => {
-                setSymbols(symbols);
+                setSymbols(filterSymbolObjects(symbols, quote));
             })
             .catch(err => {
                 if (err.response && err.response.status === 401) return history.push('/');
@@ -27,7 +39,7 @@ function Symbols() {
                 setError(err.message);
                 setSuccess('');
             })
-    }, [isSyncing])
+    }, [isSyncing, quote])
 
     function onSyncClick(event){
         const token = localStorage.getItem('token');
@@ -42,6 +54,17 @@ function Symbols() {
         })
     }
 
+    function onQuoteChange(event){
+        setQuote(event.target.value);
+        setDefaultQuote(event.target.value);
+    }
+
+    function onEditSymbol(event){
+        const symbol = event.target.id.replace('edit', '');
+        const symbolObj = symbols.find(s => s.symbol === symbol);
+        setEditSymbol(symbolObj);
+    }
+
     return (
         <React.Fragment>
             <div className='row'>
@@ -51,10 +74,13 @@ function Symbols() {
                             <div className='card-header'>
                                 <div className='row align-items-center'>
                                     <div className='col'>
-                                        <div className='fs-5 fw-bold mb-0'>
+                                        
                                             <h2 className='fs-5 fw-bold mb-0'>Symbols</h2>
 
-                                        </div>
+                                        
+                                    </div>
+                                    <div className='col'>
+                                        <SelectQuote onChange={onQuoteChange} />
                                     </div>
                                 </div>
                             </div>
@@ -71,7 +97,7 @@ function Symbols() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {symbols.map(item => <SymbolRow key={item.symbol} data={item} />)}
+                                        {symbols.map(item => <SymbolRow key={item.symbol} data={item} onClick={onEditSymbol}/>)}
                                     </tbody>
                                     <tfoot>
                                         <tr>
@@ -107,7 +133,7 @@ function Symbols() {
             </div>
 
 
-
+        <SymbolModal data={editSymbol} />
         </React.Fragment>)
 
 }
