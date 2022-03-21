@@ -2,6 +2,8 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    const symbol = await queryInterface.rawSelect('symbols', { where: {}, limit: 1 }, ['symbol']);
+    if (!symbol) {
       return queryInterface.bulkInsert('symbols', [{
         symbol: 'BTCBUSD',
         basePrecision: '8',
@@ -12,6 +14,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date()
       }])
+    }
   },
 
   down: async (queryInterface, Sequelize) => {

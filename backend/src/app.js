@@ -1,7 +1,6 @@
 const express = require('express');
 const authMiddleware = require('./middlewares/authMiddleware');
 const authController = require('./controllers/authController');
-const settingsController = require('./controllers/settingsController');
 const morgan = require('morgan');
 
 
@@ -21,13 +20,15 @@ app.use(helmet()); //helmet e um middlware que protege contra 11 ataques basicos
 app.use(express.json()); // permite o body parse em varios formatos
 
 app.use(morgan('dev')); // logger para backend
-
+  
 
 app.post('/login', authController.doLogin);
 
-app.get('/settings', authMiddleware, settingsController.getSettings);
+const settingsRouter = require('./routers/settingsRouter');
+app.use('/settings', authMiddleware, settingsRouter);
 
-app.patch('/settings', authMiddleware, settingsController.updateSettings);
+const symbolsRouter = require('./routers/symbolsRouter');
+app.use('/symbols', authMiddleware, symbolsRouter);
 
 app.post('/logout', authController.doLogout);
 
