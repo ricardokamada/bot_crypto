@@ -27,19 +27,25 @@ function Symbols() {
 
     const [isSyncing, setIsSyncing] = useState(false);
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        getSymbols(token)
-            .then(symbols => {
-                setSymbols(filterSymbolObjects(symbols, quote));
-            })
-            .catch(err => {
-                if (err.response && err.response.status === 401) return history.push('/');
-                console.error(err.message);
-                setError(err.message);
-                setSuccess('');
-            })
-    }, [isSyncing, quote])
+    function errorHandling(err) {
+        console.error(err.response ? err.response.data : err.message);
+        setError(err.response ? err.response.data : err.message);
+        setSuccess('');
+    }
+
+    // useEffect(() => {
+    //     const token = localStorage.getItem('token');
+    //     getSymbols(token)
+    //         .then(symbols => {
+    //             setSymbols(filterSymbolObjects(symbols, quote));
+    //         })
+    //         .catch(err => {
+    //             if (err.response && err.response.status === 401) return history.push('/');
+    //             console.error(err.message);
+    //             setError(err.message);
+    //             setSuccess('');
+    //         })
+    // }, [isSyncing, quote])
 
     function onSyncClick(event){
         const token = localStorage.getItem('token');
@@ -59,10 +65,27 @@ function Symbols() {
         setDefaultQuote(event.target.value);
     }
 
+    function loadSymbols(){
+        const token = localStorage.getItem('token');
+        getSymbols(token)
+            .then(symbols => {
+                setSymbols(filterSymbolObjects(symbols, quote));
+            })
+            .catch(err => errorHandling(err));
+    }
+
+    useEffect(() =>{
+        loadSymbols();
+    }, [isSyncing, quote])
+
     function onEditSymbol(event){
         const symbol = event.target.id.replace('edit', '');
         const symbolObj = symbols.find(s => s.symbol === symbol);
         setEditSymbol(symbolObj);
+    }
+
+    function onModalSubmit(event){
+        loadSymbols();
     }
 
     return (
@@ -133,7 +156,7 @@ function Symbols() {
             </div>
 
 
-        <SymbolModal data={editSymbol} />
+        <SymbolModal data={editSymbol} onSubmit={onModalSubmit}/>
         </React.Fragment>)
 
 }
