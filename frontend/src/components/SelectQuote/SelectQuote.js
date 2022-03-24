@@ -35,6 +35,10 @@ export function filterSymbolObjects(symbols, quote) {
     })
 }
 
+export function filterSymbolNames(symbols, quote){
+    return filterSymbolObjects(symbols, quote).map(s => s.symbol);
+}
+
 export function getDefaultQuote() {
     return localStorage.getItem(DEFAULT_QUOTE_PROPERTY) ? localStorage.getItem(DEFAULT_QUOTE_PROPERTY) : "USD";
 }
