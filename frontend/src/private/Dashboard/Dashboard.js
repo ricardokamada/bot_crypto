@@ -4,12 +4,15 @@ import Menu from '../../components/Menu/Menu';
 import LineChart from './LineChart';
 import MiniTicker from './MiniTicker/MiniTicker';
 import BookTicker from './BookTicker/BookTicker';
+import Wallet from './Wallet/Wallet';
 
 function Dashboard() {
 
     const [miniTickerState, setminiTickerState] = useState({});
 
     const [bookState, setBookState] = useState({});
+
+    const [balanceState, setBalanceState] = useState({});
 
     const { lastJsonMessage } = useWebSocket(process.env.REACT_APP_WS_URL, {
 
@@ -21,6 +24,7 @@ function Dashboard() {
                     lastJsonMessage.book.forEach(b => bookState[b.symbol] = b);
                     setBookState(bookState);
                 }
+                if(lastJsonMessage.balance) setBalanceState(lastJsonMessage.balance);
             }
         },
         queryParams: {},
@@ -43,6 +47,7 @@ function Dashboard() {
                 <MiniTicker data={miniTickerState} />
                 <div className='row'>
                     <BookTicker data={bookState} />
+                    <Wallet data={balanceState}/>
                 </div>
 
             </main>
