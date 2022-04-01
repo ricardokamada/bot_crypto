@@ -6,8 +6,7 @@ const appEM = require('./app-em'); //EM = EXCHANGE MONITOR
 const { settings } = require('./app');
 
 settingsRepository.getDefaultSettings()
-    .then(settings => {
-        
+    .then(settings => {    
 
         const server = app.listen(process.env.PORT, () => {
             console.log("App is runnning at " + process.env.PORT);

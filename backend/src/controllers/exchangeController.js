@@ -5,8 +5,7 @@ async function getBalance(req,res, next){
     const settings = await settingsRepository.getDecryptedSettings(id);
 
     const exchange = require('../utils/exchange')(settings);
-    const balance = await exchange.balance();
-    
+    const balance = await exchange.balance();  
 
     res.json(balance);
 }
@@ -14,6 +13,6 @@ async function getBalance(req,res, next){
 
 
 module.exports ={ 
-    getBalance,
+    getBalance
     
 }
